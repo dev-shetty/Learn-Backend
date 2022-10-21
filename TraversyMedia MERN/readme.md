@@ -8,7 +8,7 @@
 - JWT Authentication
 - React Redux and Redux Toolkit
 - Mongo DB
-- Postman
+- Thunder Client as Postman
 
 ## Commands used in terminal -
 
@@ -35,4 +35,10 @@ npm i -D nodemon
     "start": "node backend/server.js",
     "server": "nodemon backend/server.js"
   },
+```
+
+### Express async handler
+
+```
+npm i express-async-handler
 ```
