@@ -42,3 +42,15 @@ npm i -D nodemon
 ```
 npm i express-async-handler
 ```
+
+### To encrypt passwords
+
+```
+npm i bcryptjs
+```
+
+### JSON Web Token (JWT)
+
+```
+npm i jsonwebtoken
+```
