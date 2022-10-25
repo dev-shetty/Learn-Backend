@@ -54,3 +54,23 @@ npm i bcryptjs
 ```
 npm i jsonwebtoken
 ```
+
+## Frontend
+
+### Redux
+
+```
+npm i redux react-redux @reduxjs/toolkit
+```
+
+### React Router
+
+```
+npm i react-router-dom
+```
+
+### Icons
+
+```
+npm i react-icons
+```
