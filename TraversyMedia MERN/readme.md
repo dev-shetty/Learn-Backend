@@ -55,7 +55,7 @@ npm i bcryptjs
 npm i jsonwebtoken
 ```
 
-## Frontend
+## Frontend (inside frontend folder)
 
 ### Redux
 
@@ -73,4 +73,64 @@ npm i react-router-dom
 
 ```
 npm i react-icons
+```
+
+### Concurrently (Dev Dependency) to run backend and frontend together (in root folder)
+
+```
+npm i -D concurrently
+```
+
+### Scripts for running both simultaneously (root folder)
+
+```json
+  "scripts": {
+    "start": "node backend/server.js",
+    "server": "nodemon backend/server.js",
+    "client": "npm run dev --prefix frontend",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+```
+
+To run both together use (in root folder)
+
+```
+npm run dev
+```
+
+### Error while running mongoDB server in Atlas
+
+- If server is not able to connect in MongoDB server web, go to network preference and update ur current IP address
+
+## For APIs (in frontend folder)
+
+### Axios to do requests
+
+```
+npm i axios
+```
+
+### react-toastify to show alerts, errors and success alerts
+
+```
+npm i react-toastify
+```
+
+### Adding proxy to frontend - package.json
+
+- So that when we do api calls it goes to backend localhost instead of frontend
+- Do that in vite.config.js
+
+```js
+export default defineConfig({
+  plugins: [react()],
+  server: {
+    proxy: {
+      "/api": {
+        target: "http://localhost:5000",
+        changeOrigin: true,
+      },
+    },
+  },
+});
 ```
