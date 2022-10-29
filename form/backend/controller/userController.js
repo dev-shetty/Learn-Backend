@@ -1,7 +1,9 @@
-const loginUser = (req, res) => {
-  res.json("Hello User")
-}
+const asyncHandler = require("express-async-handler")
+
+const registerUser = asyncHandler(async (req, res) => {
+  
+})
 
 module.exports = {
-  loginUser,
+  registerUser,
 }
