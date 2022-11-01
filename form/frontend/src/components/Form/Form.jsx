@@ -1,4 +1,6 @@
 import { useState } from "react"
+import PrimaryBtn from "../UI Components/Buttons/PrimaryBtn"
+import "./Form.css"
 
 function Form() {
   const [formData, setFormData] = useState({
@@ -62,14 +64,20 @@ function Form() {
           </div>
           <div className="form-element">
             <label htmlFor="gender">Gender</label>
-            <input
-              type="text"
-              name="gender"
-              id="gender"
-              value={gender}
-              onChange={onChange}
-              required
-            />
+            <div className="radio-list">
+              <div>
+                <input type="radio" name="gender" id="male" />
+                <label htmlFor="male">Male</label>
+              </div>
+              <div>
+                <input type="radio" name="gender" id="female" />
+                <label htmlFor="female">Female</label>
+              </div>
+              <div>
+                <input type="radio" name="gender" id="others" />
+                <label htmlFor="others">Others</label>
+              </div>
+            </div>
           </div>
           <div className="form-element">
             <label htmlFor="mobile">Mobile Number</label>
@@ -105,7 +113,7 @@ function Form() {
             />
           </div>
           <div className="form-submit">
-            <button type="submit">Submit</button>
+            <PrimaryBtn type="submit" onCLick={onSubmit} text="Submit" />
           </div>
         </form>
       </div>

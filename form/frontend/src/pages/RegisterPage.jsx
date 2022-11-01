@@ -1,9 +1,11 @@
-import Form from "../components/Form"
+import Form from "../components/Form/Form"
+import Header from "../components/UI Components/Header/Header"
 
 function RegisterPage() {
+  const user = "User"
   return (
     <div>
-      <h1>Hello User</h1>
+      <Header heading={`Hello ${user}`} subHeading="Something" />
       <Form />
     </div>
   )
