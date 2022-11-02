@@ -1,4 +1,5 @@
 const asyncHandler = require("express-async-handler")
+const bcrypt = require("bcrypt")
 const User = require("../models/userModel")
 
 // @desc Register user
@@ -13,12 +14,23 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   const checkExisting =
-    (await User.findOne({ email: email })) || User.findOne({ mobile: mobile })
+    (await User.findOne({ email: email })) ||
+    (await User.findOne({ mobile: mobile }))
   if (checkExisting) {
     res.status(401)
     throw new Error("User already exists.... log in")
   }
-  const user = await User.create(req.body)
+  // Hashing the password
+  const salt = await bcrypt.genSalt(10)
+  const hashedPassword = await bcrypt.hash(password, salt)
+
+  const user = await User.create({
+    name: `${firstName} ${middleName} ${lastName}`,
+    mobile,
+    gender,
+    email,
+    password: hashedPassword,
+  })
   if (user) {
     res.status(200).json({
       id: user.id,
