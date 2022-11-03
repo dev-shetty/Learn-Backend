@@ -4,7 +4,7 @@ import { register, reset } from "../../features/User/userSlice"
 import PrimaryBtn from "../UI Components/Buttons/PrimaryBtn"
 import "./Form.css"
 
-function Form() {
+function RegisterForm() {
   const dispatch = useDispatch()
   const user = useSelector((state) => state.user)
   const { data, message, isSuccess, isError, isLoading } = user
@@ -24,11 +24,20 @@ function Form() {
     mobile: "",
     email: "",
     password: "",
+    passwordConf: "",
   }
 
   const [formData, setFormData] = useState(initialState)
-  const { firstName, middleName, lastName, gender, mobile, email, password } =
-    formData
+  const {
+    firstName,
+    middleName,
+    lastName,
+    gender,
+    mobile,
+    email,
+    password,
+    passwordConf,
+  } = formData
 
   const onChange = (event) => {
     const { name, value } = event.target
@@ -40,6 +49,7 @@ function Form() {
 
   const onSubmit = (event) => {
     event.preventDefault()
+    // TODO: Update Error in the UI from backend
     console.table(formData)
     dispatch(
       register({
@@ -50,6 +60,7 @@ function Form() {
         mobile,
         email,
         password,
+        passwordConf,
       })
     )
     setFormData(initialState)
@@ -161,6 +172,17 @@ function Form() {
               required
             />
           </div>
+          <div className="form-element">
+            <label htmlFor="passwordConf">Password Confirmation*</label>
+            <input
+              type="password"
+              name="passwordConf"
+              id="passwordConf"
+              value={passwordConf}
+              onChange={onChange}
+              required
+            />
+          </div>
           <div className="form-submit">
             <PrimaryBtn type="submit" onCLick={onSubmit} text="Submit" />
           </div>
@@ -170,4 +192,4 @@ function Form() {
   )
 }
 
-export default Form
+export default RegisterForm

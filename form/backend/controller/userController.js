@@ -14,11 +14,23 @@ const generateToken = (id) => {
 // @url POST /api/users
 // @access Public
 const registerUser = asyncHandler(async (req, res) => {
-  const { firstName, middleName, lastName, email, password, mobile, gender } =
-    req.body
+  const {
+    firstName,
+    middleName,
+    lastName,
+    email,
+    password,
+    mobile,
+    gender,
+    passwordConf,
+  } = req.body
   if (!firstName || !email || !password || !mobile || !gender) {
     res.status(400)
     throw new Error("Please add all the required fields")
+  }
+  if (password !== passwordConf) {
+    res.status(400)
+    throw new Error("Password doesn't match")
   }
 
   const checkExisting =

@@ -1,11 +1,11 @@
-import Form from "../components/Form/Form"
+import RegisterForm from "../components/Form/RegisterForm"
 import Header from "../components/UI Components/Header/Header"
 
 function RegisterPage() {
   return (
     <div>
       <Header heading="Register Here" />
-      <Form />
+      <RegisterForm />
     </div>
   )
 }

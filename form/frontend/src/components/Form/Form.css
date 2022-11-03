@@ -29,3 +29,11 @@ form {
     align-items: center;
     gap: 0.25em;
 }
+.register-link {
+    display: flex;
+    justify-content: center;
+}
+.link {
+    text-decoration: none;
+    color: var(--clr-primary-400);
+}
