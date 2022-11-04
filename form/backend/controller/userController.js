@@ -34,8 +34,7 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   const checkExisting =
-    (await User.findOne({ email: email })) ||
-    (await User.findOne({ mobile: mobile }))
+    (await User.findOne({ email })) || (await User.findOne({ mobile }))
   if (checkExisting) {
     res.status(401)
     throw new Error("User already exists.... log in")
@@ -64,6 +63,33 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 })
 
+// @desc Login user
+// @url POST /api/users/login
+// @access Public
+
+const loginUser = asyncHandler(async (req, res) => {
+  const { email, password } = req.body
+  if (!email || !password) {
+    res.status(400)
+    throw new Error("Fill all the fields")
+  }
+
+  const user = await User.findOne({ email })
+  console.log(user)
+  if (user && (await bcrypt.compare(password, user.password))) {
+    res.status(200).json({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      token: generateToken(user.id),
+    })
+  } else {
+    res.status(400)
+    throw new Error("Invalid Credentials")
+  }
+})
+
 module.exports = {
   registerUser,
+  loginUser,
 }

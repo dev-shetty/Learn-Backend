@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux"
+import { useNavigate } from "react-router-dom"
 import { register, reset } from "../../features/User/userSlice"
 import PrimaryBtn from "../UI Components/Buttons/PrimaryBtn"
 import "./Form.css"
@@ -8,13 +9,6 @@ function RegisterForm() {
   const dispatch = useDispatch()
   const user = useSelector((state) => state.user)
   const { data, message, isSuccess, isError, isLoading } = user
-
-  useEffect(() => {
-    if (isError) {
-      console.error(message)
-    }
-    dispatch(reset())
-  }, [data, isError, isSuccess, message, dispatch])
 
   const initialState = {
     firstName: "",
@@ -50,7 +44,6 @@ function RegisterForm() {
   const onSubmit = (event) => {
     event.preventDefault()
     // TODO: Update Error in the UI from backend
-    console.table(formData)
     dispatch(
       register({
         firstName,
@@ -65,6 +58,15 @@ function RegisterForm() {
     )
     setFormData(initialState)
   }
+
+  useEffect(() => {
+    if (isError) {
+      console.error(message)
+    }
+
+    dispatch(reset())
+  }, [data, isError, isSuccess, message, dispatch])
+
   if (isLoading) {
     return "Loading..."
   }
