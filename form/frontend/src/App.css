@@ -36,7 +36,8 @@ input[type="radio"]:checked::before {
     scale: 1;
 }
 
-.container {
+#login-page,
+#register-page {
     display: flex;
     flex-direction: column;
     justify-content: center;
