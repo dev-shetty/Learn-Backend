@@ -1,6 +1,7 @@
 import { Request, Response } from "express"
 import bcrypt from "bcryptjs"
 import User from "../models/UserModel"
+import { RegisterParams, UserCreds } from "../lib/types"
 
 /*
  *  @route - GET /api/v1/user
@@ -13,20 +14,14 @@ export const getUser = (req: Request, res: Response) => {
 }
 
 /*
- *  @route - POST /api/v1/user
+ *  @route - POST /api/v1/user/register
  *  @desc - Create a new user
  *  @access - Public
  *  @params - name*, email*, password*
  */
 
-interface RegisterParams {
-  name: string
-  email: string
-  password: string
-}
-
 export const createUser = async (req: Request, res: Response) => {
-  const { name, email, password }: RegisterParams = req.body
+  const { name, email, password }: RegisterParams & UserCreds = req.body
 
   if (!name || !email || !password) {
     throw new Error("Fill all the required details")
@@ -63,5 +58,44 @@ export const createUser = async (req: Request, res: Response) => {
     id: user._id,
     email: user.email,
     message: "User has been registered",
+  })
+}
+
+/*
+ *  @route - POST /api/v1/user/login
+ *  @desc - Login the user
+ *  @access - Public
+ *  @params - email*, password*
+ */
+
+export const loginUser = async (req: Request, res: Response) => {
+  const { email, password }: UserCreds = req.body
+  if (!email || !password) {
+    return res.status(400).json({
+      success: false,
+      message: "Fill all the required details",
+    })
+  }
+
+  const user = await User.findOne({ email: email })
+  if (!user) {
+    return res.status(401).json({
+      success: false,
+      message: "User not registered, please register",
+    })
+  }
+
+  if (await bcrypt.compare(password, user.password)) {
+    return res.status(200).json({
+      success: true,
+      id: user._id,
+      email: user.email,
+      message: "User logged in",
+    })
+  }
+
+  return res.status(401).json({
+    success: false,
+    message: "Incorrect Password",
   })
 }
