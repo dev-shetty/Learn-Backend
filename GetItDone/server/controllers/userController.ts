@@ -2,10 +2,10 @@ import { Request, Response } from "express"
 import bcrypt from "bcryptjs"
 import User from "../models/UserModel"
 import jwt from "jsonwebtoken"
-import { RegisterParams, UserProps, UserCreds } from "../lib/types"
+import { RegisterParams, UserInterface, UserCreds } from "../lib/types"
 
-const generateToken = (id: UserProps) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET!, {
+const generateToken = (user: UserInterface) => {
+  return jwt.sign({ user }, process.env.JWT_SECRET!, {
     expiresIn: "30d",
   })
 }
@@ -17,7 +17,7 @@ const generateToken = (id: UserProps) => {
  */
 
 export const getUser = (req: Request, res: Response) => {
-  res.send("Hello User")
+  res.send("Hello User")  
 }
 
 /*

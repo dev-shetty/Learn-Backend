@@ -9,8 +9,12 @@ export interface RegisterParams {
   name: string
 }
 
-export interface UserProps {
+export interface UserInterface {
   id: ObjectId
   name: string
   email: string
+}
+
+export interface TokenInterface {
+  user: UserInterface
 }
