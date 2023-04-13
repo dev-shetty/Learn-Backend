@@ -1,7 +1,14 @@
 import { Request, Response } from "express"
 import bcrypt from "bcryptjs"
 import User from "../models/UserModel"
-import { RegisterParams, UserCreds } from "../lib/types"
+import jwt from "jsonwebtoken"
+import { RegisterParams, UserProps, UserCreds } from "../lib/types"
+
+const generateToken = (id: UserProps) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET!, {
+    expiresIn: "30d",
+  })
+}
 
 /*
  *  @route - GET /api/v1/user
@@ -90,6 +97,11 @@ export const loginUser = async (req: Request, res: Response) => {
       success: true,
       id: user._id,
       email: user.email,
+      token: generateToken({
+        id: user._id,
+        name: user.name,
+        email: user.email,
+      }),
       message: "User logged in",
     })
   }
