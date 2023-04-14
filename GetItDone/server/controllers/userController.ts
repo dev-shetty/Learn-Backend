@@ -11,10 +11,10 @@ const generateToken = (user: UserInterface) => {
 }
 
 /*
- *  @route - POST /api/v1/user/register
- *  @desc - Create a new user
+ *  @route  - POST /api/v1/user/register
+ *  @desc   - Create a new user
+ *  @body   - name*, email*, password*
  *  @access - Public
- *  @body - name*, email*, password*
  */
 
 export const createUser = async (req: Request, res: Response) => {
@@ -66,10 +66,10 @@ export const createUser = async (req: Request, res: Response) => {
 }
 
 /*
- *  @route - POST /api/v1/user/login
- *  @desc - Login the user
+ *  @route  - POST /api/v1/user/login
+ *  @desc   - Login the user
+ *  @body   - email*, password*
  *  @access - Public
- *  @body - email*, password*
  */
 
 export const loginUser = async (req: Request, res: Response) => {
@@ -125,8 +125,8 @@ export const loginUser = async (req: Request, res: Response) => {
 }
 
 /*
- *  @route - GET /api/v1/user
- *  @desc - Gets the current user
+ *  @route  - GET /api/v1/user
+ *  @desc   - Gets the current user
  *  @access - Protected
  */
 
@@ -153,8 +153,8 @@ export const getUser = (req: Request, res: Response) => {
 }
 
 /*
- *  @route - GET /api/v1/user/logout
- *  @desc - Logout the user
+ *  @route  - GET /api/v1/user/logout
+ *  @desc   - Logout the user
  *  @access - Protected
  */
 

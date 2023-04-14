@@ -3,9 +3,9 @@ import { FilterQuery } from "../lib/types"
 import Todo from "../models/TodoModel"
 
 /*
- *  @route - POST /api/v1/todo
- *  @desc - Create a todo
- *  @body - title*, description
+ *  @route  - POST /api/v1/todo
+ *  @desc   - Create a todo
+ *  @body   - title*, description
  *  @access - Protected
  */
 export const createTodos = async (req: Request, res: Response) => {
@@ -98,8 +98,8 @@ export const getTodos = async (req: Request, res: Response) => {
 }
 
 /*
- *  @route - PATCH /api/v1/todo/:id
- *  @desc - Update a specific todo
+ *  @route  - PATCH /api/v1/todo/:id
+ *  @desc   - Update a specific todo
  *  @access - Protected
  */
 export const updateTodo = async (req: Request, res: Response) => {
@@ -140,8 +140,8 @@ export const updateTodo = async (req: Request, res: Response) => {
 }
 
 /*
- *  @route - DELETE /api/v1/todo/:id
- *  @desc - Delete the todo
+ *  @route  - DELETE /api/v1/todo/:id
+ *  @desc   - Delete the todo
  *  @access - Protected
  */
 export const deleteTodo = async (req: Request, res: Response) => {
