@@ -17,7 +17,18 @@ const generateToken = (user: UserInterface) => {
  */
 
 export const getUser = (req: Request, res: Response) => {
-  res.send("Hello User")  
+  const { user } = req
+  if (user) {
+    return res.status(200).json({
+      success: true,
+      user,
+    })
+  }
+
+  return res.status(401).json({
+    success: false,
+    message: "User not authenticated",
+  })
 }
 
 /*
@@ -92,18 +103,28 @@ export const loginUser = async (req: Request, res: Response) => {
     })
   }
 
+  let token
+
   if (await bcrypt.compare(password, user.password)) {
-    return res.status(200).json({
-      success: true,
+    token = generateToken({
       id: user._id,
+      name: user.name,
       email: user.email,
-      token: generateToken({
-        id: user._id,
-        name: user.name,
-        email: user.email,
-      }),
-      message: "User logged in",
     })
+
+    return res
+      .status(200)
+      .cookie("access_token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+      })
+      .json({
+        success: true,
+        id: user._id,
+        email: user.email,
+        token,
+        message: "User logged in",
+      })
   }
 
   return res.status(401).json({

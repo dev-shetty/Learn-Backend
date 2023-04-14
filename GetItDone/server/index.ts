@@ -1,5 +1,6 @@
 import express from "express"
 import dotenv from "dotenv"
+import cookieParser from "cookie-parser"
 import { connectDB } from "./config/db"
 import userRouter from "./routes/userRoutes"
 import todoRouter from "./routes/todoRoutes"
@@ -9,6 +10,7 @@ dotenv.config()
 const { PORT } = process.env
 
 // Adding middlewares
+app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
