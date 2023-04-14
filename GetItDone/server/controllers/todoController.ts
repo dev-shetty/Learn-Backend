@@ -7,41 +7,49 @@ import Todo from "../models/TodoModel"
  *  @access - Protected
  */
 export const createTodos = async (req: Request, res: Response) => {
-  const { user } = req
-  if (!user) {
-    return res.status(401).json({
+  try {
+    const { user } = req
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "User not authenticated",
+      })
+    }
+
+    const { title, description } = req.body
+    if (!title) {
+      return res.status(400).json({
+        success: false,
+        message: "Enter the title for Todo",
+      })
+    }
+
+    const newTodo = await Todo.create({
+      title,
+      description: description ?? "",
+      user: user._id,
+    })
+
+    if (!newTodo) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Unable to create todo, please check the details and try again",
+      })
+    }
+
+    return res.status(200).json({
+      success: true,
+      id: newTodo._id,
+      title: newTodo.title,
+      message: "Todo has been created!",
+    })
+  } catch (error) {
+    return res.status(500).json({
       success: false,
-      message: "User not authenticated",
+      error,
     })
   }
-
-  const { title, description } = req.body
-  if (!title) {
-    return res.status(400).json({
-      success: false,
-      message: "Enter the title for Todo",
-    })
-  }
-
-  const newTodo = await Todo.create({
-    title,
-    description: description ?? "",
-    user: user._id,
-  })
-
-  if (!newTodo) {
-    return res.status(400).json({
-      success: false,
-      message: "Unable to create todo, please check the details and try again",
-    })
-  }
-
-  return res.status(200).json({
-    success: true,
-    id: newTodo._id,
-    title: newTodo.title,
-    message: "Todo has been created!",
-  })
 }
 
 /*
@@ -50,19 +58,26 @@ export const createTodos = async (req: Request, res: Response) => {
  *  @access - Protected
  */
 export const getTodos = async (req: Request, res: Response) => {
-  const { user } = req
-  if (!user) {
-    return res.status(401).json({
+  try {
+    const { user } = req
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "User not authenticated",
+      })
+    }
+
+    const todos = await Todo.find({ user: user._id })
+    return res.status(200).json({
+      success: true,
+      todos,
+    })
+  } catch (error) {
+    return res.status(500).json({
       success: false,
-      message: "User not authenticated",
+      error,
     })
   }
-
-  const todos = await Todo.find({ user: user._id })
-  return res.status(200).json({
-    success: true,
-    todos,
-  })
 }
 
 /*
@@ -71,32 +86,40 @@ export const getTodos = async (req: Request, res: Response) => {
  *  @access - Protected
  */
 export const updateTodo = async (req: Request, res: Response) => {
-  const { id } = req.params
-  const { isCompleted, title, description } = req.body
-  const updates = {
-    isCompleted,
-    title,
-    description,
-  }
+  try {
+    const { id } = req.params
+    const { isCompleted, title, description } = req.body
 
-  const updatedTodo = await Todo.findByIdAndUpdate(
-    id,
-    { $set: updates },
-    { new: true }
-  )
+    const updates = {
+      isCompleted,
+      title,
+      description,
+    }
 
-  if (!updatedTodo) {
-    return res.status(404).json({
+    const updatedTodo = await Todo.findByIdAndUpdate(
+      id,
+      { $set: updates },
+      { new: true }
+    )
+
+    if (!updatedTodo) {
+      return res.status(404).json({
+        success: false,
+        message: "Cannot find the requested todo",
+      })
+    }
+
+    return res.status(200).json({
+      success: true,
+      updatedTodo,
+      message: "Todo Updated",
+    })
+  } catch (error) {
+    return res.status(500).json({
       success: false,
-      message: "Cannot find the requested todo",
+      error,
     })
   }
-
-  return res.status(200).json({
-    success: true,
-    updatedTodo,
-    message: "Todo Updated",
-  })
 }
 
 /*

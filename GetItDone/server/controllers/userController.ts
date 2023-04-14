@@ -18,44 +18,51 @@ const generateToken = (user: UserInterface) => {
  */
 
 export const createUser = async (req: Request, res: Response) => {
-  const { name, email, password }: RegisterParams & UserCreds = req.body
+  try {
+    const { name, email, password }: RegisterParams & UserCreds = req.body
 
-  if (!name || !email || !password) {
-    throw new Error("Fill all the required details")
-  }
+    if (!name || !email || !password) {
+      throw new Error("Fill all the required details")
+    }
 
-  // Checking if user already has an account while registering
-  const isUserRegistered = await User.findOne({ email: email })
-  if (isUserRegistered) {
-    return res.status(409).json({
+    // Checking if user already has an account while registering
+    const isUserRegistered = await User.findOne({ email: email })
+    if (isUserRegistered) {
+      return res.status(409).json({
+        success: false,
+        message: "Email already registered, please login",
+      })
+    }
+
+    // Hashing the password
+    const salt = await bcrypt.genSalt(10)
+    const hashedPassword = await bcrypt.hash(password, salt)
+
+    const user = await User.create({
+      name: name,
+      email: email,
+      password: hashedPassword,
+    })
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Unable to register user, please check the details and try again",
+      })
+    }
+
+    return res.status(200).json({
+      success: true,
+      id: user._id,
+      email: user.email,
+      message: "User has been registered",
+    })
+  } catch (error) {
+    return res.status(500).json({
       success: false,
-      message: "Email already registered, please login",
+      error,
     })
   }
-
-  // Hashing the password
-  const salt = await bcrypt.genSalt(10)
-  const hashedPassword = await bcrypt.hash(password, salt)
-
-  const user = await User.create({
-    name: name,
-    email: email,
-    password: hashedPassword,
-  })
-  if (!user) {
-    return res.status(400).json({
-      success: false,
-      message:
-        "Unable to register user, please check the details and try again",
-    })
-  }
-
-  return res.status(200).json({
-    success: true,
-    id: user._id,
-    email: user.email,
-    message: "User has been registered",
-  })
 }
 
 /*
@@ -66,50 +73,55 @@ export const createUser = async (req: Request, res: Response) => {
  */
 
 export const loginUser = async (req: Request, res: Response) => {
-  const { email, password }: UserCreds = req.body
-  if (!email || !password) {
-    return res.status(400).json({
-      success: false,
-      message: "Fill all the required details",
-    })
-  }
+  try {
+    const { email, password }: UserCreds = req.body
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "Fill all the required details",
+      })
+    }
 
-  const user = await User.findOne({ email: email })
-  if (!user) {
+    const user = await User.findOne({ email: email })
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "User not registered, please register",
+      })
+    }
+
+    if (await bcrypt.compare(password, user.password)) {
+      const token = generateToken({
+        id: user._id,
+        name: user.name,
+        email: user.email,
+      })
+
+      return res
+        .cookie("access_token", token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+        })
+        .status(200)
+        .json({
+          success: true,
+          id: user._id,
+          email: user.email,
+          token,
+          message: "User logged in",
+        })
+    }
+
     return res.status(401).json({
       success: false,
-      message: "User not registered, please register",
+      message: "Incorrect Password",
+    })
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      error,
     })
   }
-
-  let token
-
-  if (await bcrypt.compare(password, user.password)) {
-    token = generateToken({
-      id: user._id,
-      name: user.name,
-      email: user.email,
-    })
-
-    return res
-      .cookie("access_token", token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-      })
-      .status(200)
-      .json({
-        success: true,
-        id: user._id,
-        email: user.email,
-        token,
-        message: "User logged in",
-      })
-  }
-
-  return res.status(401).json({
-    success: false,
-    message: "Incorrect Password",
-  })
 }
 
 /*
@@ -119,18 +131,25 @@ export const loginUser = async (req: Request, res: Response) => {
  */
 
 export const getUser = (req: Request, res: Response) => {
-  const { user } = req
-  if (user) {
-    return res.status(200).json({
-      success: true,
-      user,
+  try {
+    const { user } = req
+    if (user) {
+      return res.status(200).json({
+        success: true,
+        user,
+      })
+    }
+
+    return res.status(401).json({
+      success: false,
+      message: "User not authenticated",
+    })
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      error,
     })
   }
-
-  return res.status(401).json({
-    success: false,
-    message: "User not authenticated",
-  })
 }
 
 /*
@@ -141,8 +160,15 @@ export const getUser = (req: Request, res: Response) => {
 
 export const logoutUser = (req: Request, res: Response) => {
   // No token check because user has to login to logout
-  return res.clearCookie("access_token").status(200).json({
-    success: true,
-    message: "User logged out",
-  })
+  try {
+    return res.clearCookie("access_token").status(200).json({
+      success: true,
+      message: "User logged out",
+    })
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      error,
+    })
+  }
 }
