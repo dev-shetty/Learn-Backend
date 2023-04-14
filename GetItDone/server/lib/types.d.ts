@@ -1,4 +1,5 @@
 import { ObjectId } from "mongodb"
+import UserModel from "../models/UserModel"
 
 export interface UserCreds {
   email: string
@@ -17,4 +18,9 @@ export interface UserInterface {
 
 export interface TokenInterface {
   user: UserInterface
+}
+
+export interface FilterQuery {
+  user: UserModel
+  isCompleted?: boolean
 }

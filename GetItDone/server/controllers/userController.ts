@@ -14,7 +14,7 @@ const generateToken = (user: UserInterface) => {
  *  @route - POST /api/v1/user/register
  *  @desc - Create a new user
  *  @access - Public
- *  @params - name*, email*, password*
+ *  @body - name*, email*, password*
  */
 
 export const createUser = async (req: Request, res: Response) => {
@@ -69,7 +69,7 @@ export const createUser = async (req: Request, res: Response) => {
  *  @route - POST /api/v1/user/login
  *  @desc - Login the user
  *  @access - Public
- *  @params - email*, password*
+ *  @body - email*, password*
  */
 
 export const loginUser = async (req: Request, res: Response) => {

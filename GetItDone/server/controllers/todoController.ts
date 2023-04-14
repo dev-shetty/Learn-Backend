@@ -1,9 +1,11 @@
 import { Request, Response } from "express"
+import { FilterQuery } from "../lib/types"
 import Todo from "../models/TodoModel"
 
 /*
  *  @route - POST /api/v1/todo
  *  @desc - Create a todo
+ *  @body - title*, description
  *  @access - Protected
  */
 export const createTodos = async (req: Request, res: Response) => {
@@ -53,8 +55,10 @@ export const createTodos = async (req: Request, res: Response) => {
 }
 
 /*
- *  @route - GET /api/v1/todo
- *  @desc - Get all the todos
+ *  @route  - GET /api/v1/todo
+ *         or GET /api/v1/todo?completed=true
+ *  @desc   - Get all the todos
+ *  @query  - completed = true | false
  *  @access - Protected
  */
 export const getTodos = async (req: Request, res: Response) => {
@@ -67,10 +71,23 @@ export const getTodos = async (req: Request, res: Response) => {
       })
     }
 
-    const todos = await Todo.find({ user: user._id })
+    const filterQuery: FilterQuery = {
+      user: user._id,
+    }
+
+    const { completed } = req.query
+
+    // if Completed query is not given then send all the Todos
+    if (completed) {
+      // If completed is true then give all the completed todo and vice-versa
+      filterQuery.isCompleted = completed === "true"
+    }
+
+    const todos = await Todo.find(filterQuery)
+
     return res.status(200).json({
       success: true,
-      todos,
+      todos: todos,
     })
   } catch (error) {
     return res.status(500).json({
