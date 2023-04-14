@@ -11,27 +11,6 @@ const generateToken = (user: UserInterface) => {
 }
 
 /*
- *  @route - GET /api/v1/user
- *  @desc - Get the user
- *  @access - Public (for now)
- */
-
-export const getUser = (req: Request, res: Response) => {
-  const { user } = req
-  if (user) {
-    return res.status(200).json({
-      success: true,
-      user,
-    })
-  }
-
-  return res.status(401).json({
-    success: false,
-    message: "User not authenticated",
-  })
-}
-
-/*
  *  @route - POST /api/v1/user/register
  *  @desc - Create a new user
  *  @access - Public
@@ -113,11 +92,11 @@ export const loginUser = async (req: Request, res: Response) => {
     })
 
     return res
-      .status(200)
       .cookie("access_token", token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
       })
+      .status(200)
       .json({
         success: true,
         id: user._id,
@@ -130,5 +109,40 @@ export const loginUser = async (req: Request, res: Response) => {
   return res.status(401).json({
     success: false,
     message: "Incorrect Password",
+  })
+}
+
+/*
+ *  @route - GET /api/v1/user
+ *  @desc - Gets the current user
+ *  @access - Protected
+ */
+
+export const getUser = (req: Request, res: Response) => {
+  const { user } = req
+  if (user) {
+    return res.status(200).json({
+      success: true,
+      user,
+    })
+  }
+
+  return res.status(401).json({
+    success: false,
+    message: "User not authenticated",
+  })
+}
+
+/*
+ *  @route - GET /api/v1/user/logout
+ *  @desc - Logout the user
+ *  @access - Protected
+ */
+
+export const logoutUser = (req: Request, res: Response) => {
+  // No token check because user has to login to logout
+  return res.clearCookie("access_token").status(200).json({
+    success: true,
+    message: "User logged out",
   })
 }
