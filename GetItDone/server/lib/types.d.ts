@@ -23,4 +23,14 @@ export interface TokenInterface {
 export interface FilterQuery {
   user: UserModel
   isCompleted?: boolean
+  labels?: string
 }
+
+export type Label =
+  | "Priority"
+  | "Fun"
+  | "Personal"
+  | "Work"
+  | "Important"
+  | "In Progress"
+  | string

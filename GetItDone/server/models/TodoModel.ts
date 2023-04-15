@@ -13,6 +13,9 @@ const TodoModel = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    labels: {
+      type: Array,  
+    },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

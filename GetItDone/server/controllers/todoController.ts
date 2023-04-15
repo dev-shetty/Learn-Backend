@@ -18,7 +18,7 @@ export const createTodos = async (req: Request, res: Response) => {
       })
     }
 
-    const { title, description } = req.body
+    const { title, description, labels } = req.body
     if (!title) {
       return res.status(400).json({
         success: false,
@@ -29,6 +29,7 @@ export const createTodos = async (req: Request, res: Response) => {
     const newTodo = await Todo.create({
       title,
       description: description ?? "",
+      labels: labels ?? [""],
       user: user._id,
     })
 
@@ -75,13 +76,19 @@ export const getTodos = async (req: Request, res: Response) => {
       user: user._id,
     }
 
-    const { completed } = req.query
+    const { completed, label } = req.query
 
     // if Completed query is not given then send all the Todos
     if (completed) {
       // If completed is true then give all the completed todo and vice-versa
       filterQuery.isCompleted = completed === "true"
     }
+
+    if (label) {
+      filterQuery.labels = label as string
+    }
+
+    console.log(filterQuery)
 
     const todos = await Todo.find(filterQuery)
 
@@ -105,12 +112,13 @@ export const getTodos = async (req: Request, res: Response) => {
 export const updateTodo = async (req: Request, res: Response) => {
   try {
     const { id } = req.params
-    const { isCompleted, title, description } = req.body
+    const { isCompleted, title, description, labels } = req.body
 
     const updates = {
       isCompleted,
       title,
       description,
+      labels,
     }
 
     const updatedTodo = await Todo.findByIdAndUpdate(
